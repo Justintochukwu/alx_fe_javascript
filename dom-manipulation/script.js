@@ -18,41 +18,24 @@ function showNotification(message) {
 }
 
 // Function to simulate fetching quotes from a server
-async function fetchQuotesFromServer() {
+// Function to post a new quote to the mock server
+async function postQuoteToServer(quote) {
     try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
+            method: "POST", // POST request
+            headers: {
+                "Content-Type": "application/json" // JSON format
+            },
+            body: JSON.stringify(quote) // Convert object to JSON string
+        });
+
         const data = await response.json();
+        console.log("Quote posted to server:", data);
 
-        const serverQuotes = data.slice(0, 5).map(post => ({
-            text: post.title,
-            author: `User ${post.userId}`,
-            category: "Server"
-        }));
-
-        let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-
-        // Detect new quotes from server
-        const newServerQuotes = serverQuotes.filter(
-            sq => !localQuotes.some(lq => lq.text === sq.text)
-        );
-
-        // Merge (server takes precedence)
-        const mergedQuotes = [...serverQuotes, ...localQuotes.filter(
-            lq => !serverQuotes.some(sq => sq.text === lq.text)
-        )];
-
-        localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
-
-        // Update UI
-        displayQuotes(mergedQuotes);
-
-        // Show notification if new quotes were found
-        if (newServerQuotes.length > 0) {
-            showNotification(`📢 ${newServerQuotes.length} new quote(s) from server`);
-        }
-
+        showNotification("Quote successfully posted to server!");
     } catch (error) {
-        console.error("Error fetching quotes from server:", error);
+        console.error("Error posting quote:", error);
+        showNotification("Failed to post quote to server!");
     }
 }
 
