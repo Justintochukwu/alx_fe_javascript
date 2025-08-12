@@ -51,13 +51,11 @@ async function syncQuotes() {
         let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
         // Conflict resolution: server's data takes precedence
-        showNotification("✅ Quotes synced with server!", "success");
-showNotification("⚠ Conflict detected — using server data.", "error");
-
-        
-
-        // Save updated list to local storage
+        const updatedQuotes = [...serverQuotes];
         localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
+
+        showNotification("✅ Quotes synced with server!", "success");
+        showNotification("⚠ Conflict detected — using server data.", "error");
 
         console.log("Sync completed. Local quotes updated from server.");
         showNotification("Quotes synced with server!");
