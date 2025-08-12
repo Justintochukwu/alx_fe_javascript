@@ -38,6 +38,32 @@ async function postQuoteToServer(quote) {
         showNotification("Failed to post quote to server!");
     }
 }
+// Function to sync quotes between local storage and server
+async function syncQuotes() {
+    try {
+        console.log("Starting quote sync...");
+
+        // Fetch latest quotes from server
+        const serverResponse = await fetch("https://jsonplaceholder.typicode.com/posts");
+        const serverQuotes = await serverResponse.json();
+
+        // Get local quotes
+        let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+
+        // Conflict resolution: server's data takes precedence
+        const updatedQuotes = [...serverQuotes];
+
+        // Save updated list to local storage
+        localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
+
+        console.log("Sync completed. Local quotes updated from server.");
+        showNotification("Quotes synced with server!");
+    } catch (error) {
+        console.error("Error syncing quotes:", error);
+        showNotification("Failed to sync quotes.");
+    }
+}
+
 
 // Periodic sync
 function startQuoteSync() {
