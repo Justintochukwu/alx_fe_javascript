@@ -70,3 +70,29 @@ function startQuoteSync() {
     fetchQuotesFromServer();
     setInterval(fetchQuotesFromServer, 30000);
 }
+
+// Create a simple notification function
+function showNotification(message, type = "info") {
+    const notification = document.createElement("div");
+    notification.textContent = message;
+    notification.className = `notification ${type}`;
+
+    // Style it quickly (could be moved to CSS file)
+    notification.style.position = "fixed";
+    notification.style.bottom = "20px";
+    notification.style.right = "20px";
+    notification.style.backgroundColor = type === "error" ? "#ff4d4d" : "#4caf50";
+    notification.style.color = "white";
+    notification.style.padding = "10px 15px";
+    notification.style.borderRadius = "5px";
+    notification.style.boxShadow = "0 2px 8px rgba(0,0,0,0.2)";
+    notification.style.zIndex = "9999";
+    notification.style.fontSize = "14px";
+
+    document.body.appendChild(notification);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        notification.remove();
+    }, 3000);
+}
