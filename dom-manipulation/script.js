@@ -42,7 +42,7 @@ function filterQuotes() {
     // Save the last selected filter to local storage
     localStorage.setItem("selectedCategory", selectedCategory);
 
-    const quoteContainer = document.getElementById("quote-container");
+    const quoteContainer = document.getElementById("quoteDisplay");
     quoteContainer.innerHTML = "";
 
     // Filter logic
