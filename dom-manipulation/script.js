@@ -54,8 +54,8 @@ async function syncQuotes() {
         const updatedQuotes = [...serverQuotes];
         localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
 
-        showNotification("✅ Quotes synced with server!", "success");
-        showNotification("⚠ Conflict detected — using server data.", "error");
+        alert("Quotes synced with server!", "success");
+        alert("Conflict detected — using server data.", "error");
 
         console.log("Sync completed. Local quotes updated from server.");
         showNotification("Quotes synced with server!");
