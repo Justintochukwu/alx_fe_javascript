@@ -1,74 +1,60 @@
-// Function to show notifications
-function showNotification(message) {
-    const notif = document.createElement("div");
-    notif.textContent = message;
-    notif.style.position = "fixed";
-    notif.style.bottom = "20px";
-    notif.style.right = "20px";
-    notif.style.background = "#333";
-    notif.style.color = "#fff";
-    notif.style.padding = "10px 20px";
-    notif.style.borderRadius = "5px";
-    notif.style.zIndex = "9999";
-    document.body.appendChild(notif);
+// Array to store quotes
+let quotes = [
+    { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
+    { text: "In the middle of every difficulty lies opportunity.", category: "Inspiration" },
+    { text: "A person who never made a mistake never tried anything new.", category: "Wisdom" }
+];
 
-    setTimeout(() => {
-        notif.remove();
-    }, 3000); // Disappear after 3 seconds
-}
+// Function to display a random quote
+function showRandomQuote() {
+    const quoteContainer = document.getElementById("quoteDisplay");
 
-// Function to simulate fetching quotes from a server
-// Function to post a new quote to the mock server
-async function postQuoteToServer(quote) {
-    try {
-        const response = await fetch("https://jsonplaceholder.typicode.com/posts", {
-            method: "POST", // POST request
-            headers: {
-                "Content-Type": "application/json" // JSON format
-            },
-            body: JSON.stringify(quote) // Convert object to JSON string
-        });
-
-        const data = await response.json();
-        console.log("Quote posted to server:", data);
-
-        showNotification("Quote successfully posted to server!");
-    } catch (error) {
-        console.error("Error posting quote:", error);
-        showNotification("Failed to post quote to server!");
+    if (quotes.length === 0) {
+        quoteContainer.textContent = "No quotes available.";
+        return;
     }
+
+    // Pick a random quote
+    const randomIndex = Math.floor(Math.random() * quotes.length);
+    const randomQuote = quotes[randomIndex];
+
+    // Display in DOM
+    quoteContainer.innerHTML = `
+        <p><strong>Quote:</strong> "${randomQuote.text}"</p>
+        <p><em>Category:</em> ${randomQuote.category}</p>
+    `;
 }
-// Function to sync quotes between local storage and server
-async function syncQuotes() {
-    try {
-        console.log("Starting quote sync...");
 
-        // Fetch latest quotes from server
-        const serverResponse = await fetch("https://jsonplaceholder.typicode.com/posts");
-        const serverQuotes = await serverResponse.json();
+// Function to add a new quote from form inputs
+function addQuote() {
+    const quoteTextInput = document.getElementById("newQuoteText");
+    const categoryInput = document.getElementById("newQuoteCategory");
+    const quoteContainer = document.getElementById("quoteDisplay");
 
-        // Get local quotes
-        let localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+    const newQuoteText = quoteTextInput.value.trim();
+    const newQuoteCategory = categoryInput.value.trim();
 
-        // Conflict resolution: server's data takes precedence
-        const updatedQuotes = [...serverQuotes];
-        localStorage.setItem("quotes", JSON.stringify(updatedQuotes));
-
-        alert("Quotes synced with server!", "success");
-        alert("Conflict detected — using server data.", "error");
-
-        console.log("Sync completed. Local quotes updated from server.");
-        showNotification("Quotes synced with server!");
-    } catch (error) {
-        console.error("Error syncing quotes:", error);
-        showNotification("Failed to sync quotes.");
+    if (newQuoteText === "" || newQuoteCategory === "") {
+        alert("Please enter both a quote and a category.");
+        return;
     }
+
+    // Add new quote to array
+    const newQuote = {
+        text: newQuoteText,
+        category: newQuoteCategory
+    };
+    quotes.push(newQuote);
+
+    // Update the DOM immediately to show the new quote
+    quoteContainer.innerHTML = `
+        <p><strong>Quote:</strong> "${newQuote.text}"</p>
+        <p><em>Category:</em> ${newQuote.category}</p>
+    `;
+
+    // Clear input fields
+    quoteTextInput.value = "";
+    categoryInput.value = "";
+
+    alert("Quote added successfully!");
 }
-
-
-// Periodic sync
-function startQuoteSync() {
-    fetchQuotesFromServer();
-    setInterval(fetchQuotesFromServer, 30000);
-}
-
