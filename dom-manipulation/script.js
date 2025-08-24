@@ -1,60 +1,77 @@
 // Array to store quotes
 let quotes = [
-    { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
-    { text: "In the middle of every difficulty lies opportunity.", category: "Inspiration" },
-    { text: "A person who never made a mistake never tried anything new.", category: "Wisdom" }
+  { text: "The only limit to our realization of tomorrow is our doubts of today.", category: "Motivation" },
+  { text: "In the middle of every difficulty lies opportunity.", category: "Inspiration" },
+  { text: "A person who never made a mistake never tried anything new.", category: "Wisdom" }
 ];
+
+// Elements
+const quoteDisplay = document.getElementById("quoteDisplay");
+const categorySelect = document.getElementById("categorySelect");
+const newQuoteBtn = document.getElementById("newQuote");
 
 // Function to display a random quote
 function showRandomQuote() {
-    const quoteContainer = document.getElementById("quoteDisplay");
+  let selectedCategory = categorySelect.value;
 
-    if (quotes.length === 0) {
-        quoteContainer.textContent = "No quotes available.";
-        return;
-    }
+  // Filter quotes by category if not "all"
+  let filteredQuotes = selectedCategory === "all"
+    ? quotes
+    : quotes.filter(q => q.category.toLowerCase() === selectedCategory.toLowerCase());
 
-    // Pick a random quote
-    const randomIndex = Math.floor(Math.random() * quotes.length);
-    const randomQuote = quotes[randomIndex];
+  if (filteredQuotes.length === 0) {
+    quoteDisplay.textContent = "No quotes available for this category.";
+    return;
+  }
 
-    // Display in DOM
-    quoteContainer.innerHTML = `
-        <p><strong>Quote:</strong> "${randomQuote.text}"</p>
-        <p><em>Category:</em> ${randomQuote.category}</p>
-    `;
+  const randomIndex = Math.floor(Math.random() * filteredQuotes.length);
+  const randomQuote = filteredQuotes[randomIndex];
+
+  quoteDisplay.innerHTML = `
+    <p><strong>Quote:</strong> "${randomQuote.text}"</p>
+    <p><em>Category:</em> ${randomQuote.category}</p>
+  `;
 }
 
-// Function to add a new quote from form inputs
+// Function to add a new quote dynamically
 function addQuote() {
-    const quoteTextInput = document.getElementById("newQuoteText");
-    const categoryInput = document.getElementById("newQuoteCategory");
-    const quoteContainer = document.getElementById("quoteDisplay");
+  const quoteTextInput = document.getElementById("newQuoteText");
+  const categoryInput = document.getElementById("newQuoteCategory");
 
-    const newQuoteText = quoteTextInput.value.trim();
-    const newQuoteCategory = categoryInput.value.trim();
+  const newQuoteText = quoteTextInput.value.trim();
+  const newQuoteCategory = categoryInput.value.trim();
 
-    if (newQuoteText === "" || newQuoteCategory === "") {
-        alert("Please enter both a quote and a category.");
-        return;
-    }
+  if (newQuoteText === "" || newQuoteCategory === "") {
+    alert("Please enter both a quote and a category.");
+    return;
+  }
 
-    // Add new quote to array
-    const newQuote = {
-        text: newQuoteText,
-        category: newQuoteCategory
-    };
-    quotes.push(newQuote);
+  const newQuote = {
+    text: newQuoteText,
+    category: newQuoteCategory
+  };
 
-    // Update the DOM immediately to show the new quote
-    quoteContainer.innerHTML = `
-        <p><strong>Quote:</strong> "${newQuote.text}"</p>
-        <p><em>Category:</em> ${newQuote.category}</p>
-    `;
+  quotes.push(newQuote);
 
-    // Clear input fields
-    quoteTextInput.value = "";
-    categoryInput.value = "";
+  // If the category is new, add it to dropdown
+  if (![...categorySelect.options].some(opt => opt.value.toLowerCase() === newQuoteCategory.toLowerCase())) {
+    let option = document.createElement("option");
+    option.value = newQuoteCategory;
+    option.textContent = newQuoteCategory;
+    categorySelect.appendChild(option);
+  }
 
-    alert("Quote added successfully!");
+  // Show newly added quote immediately
+  quoteDisplay.innerHTML = `
+    <p><strong>Quote:</strong> "${newQuote.text}"</p>
+    <p><em>Category:</em> ${newQuote.category}</p>
+  `;
+
+  // Reset inputs
+  quoteTextInput.value = "";
+  categoryInput.value = "";
+  alert("Quote added successfully!");
 }
+
+// Event listeners
+newQuoteBtn.addEventListener("click", showRandomQuote);

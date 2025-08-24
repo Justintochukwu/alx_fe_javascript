@@ -2,16 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Quote App</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dynamic Quote Generator</title>
 </head>
 <body>
-  <h1>Random Quotes</h1>
+  <h1>Dynamic Quote Generator</h1>
 
-  <div id="quoteDisplay">Click below to see a random quote.</div>
+  <!-- Quote display section -->
+  <div id="quoteDisplay">Click the button to see a quote.</div>
   <br>
 
-  <button onclick="showRandomQuote()">Show Random Quote</button>
+  <!-- Show new random quote -->
+  <button id="newQuote">Show New Quote</button>
 
+  <!-- Filter by category -->
+  <h2>Filter by Category</h2>
+  <select id="categorySelect">
+    <option value="all">All</option>
+  </select>
+
+  <!-- Add new quote form -->
   <h2>Add a New Quote</h2>
   <div>
     <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
